@@ -1,0 +1,46 @@
+<!--?xml version="1.0" encoding="UTF-8" ?-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.ImageFileInspection.dao.ImageFileDao">
+    <select id="readDb" resultType="java.lang.String" parameterType="int">
+        SELECT
+            IMAGE
+        FROM
+            FILEIMAGE
+        WHERE
+            ID = #{id}
+    </select>
+
+    <insert id="regist" parameterType="com.example.ImageFileInspection.entity.ImageFileEntity"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+            FILEIMAGE
+        (
+            FILENAME,
+            IMAGE
+        )
+        VALUES
+        (
+            #{filename},
+            #{image}
+        )
+
+    </insert>
+
+    <select id="selectOption" resultType="com.example.ImageFileInspection.entity.ImageFileEntity">
+        SELECT
+            ID,
+            FILENAME
+        FROM
+            FILEIMAGE
+    </select>
+
+    <select id="selectAll" resultType="com.example.ImageFileInspection.entity.ImageFileEntity">
+        SELECT
+            ID,
+            FILENAME,
+            IMAGE
+        FROM
+            FILEIMAGE
+    </select>
+</mapper>

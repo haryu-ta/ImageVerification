@@ -1,0 +1,6 @@
+Create Table FileImage(
+id INT auto_increment,
+filename varchar(50) NOT NULL,
+image MEDIUMBLOB,
+PRIMARY KEY (id)
+);

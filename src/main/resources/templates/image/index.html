@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Image Init</title>
+	</head>
+	<body>
+		<h1>ファイルアップロード</h1>
+		<div>
+		    <form th:action="@{/image/upload}" th:object="${imageForm}" method="post" enctype="multipart/form-data">
+		        <span style="font-size:20px;">ファイルを選択： </span><input type="file" th:field="*{image}" /><br/>
+		        <input type="submit" value="送信する" style="font-size:20px;width:90%;"/>
+		    </form>		
+		</div>
+		<hr>
+		<h1>アップロードなし確認</h1>
+		<form th:action="@{/image/disp}" method="post" th:object="${optionForm}">
+			<span>画像選択</span>
+			<select name="fileid">
+				<option th:each="item : ${selectItems}" th:value="${item.value}" th:text="${item.key}"></option>
+			</select>
+			<input type="submit"  value="次へ" style="font-size:20px;width:90%;">
+		</form>
+		<hr>
+		<h1>アップロードなし回転も確認</h1>
+		<form th:action="@{/image/disp}" method="get">
+			<input type="submit"  value="次へ" style="font-size:20px;width:90%;">
+		</form>
+		<hr>
+		<h1>画像拡大・縮小・回転検証画面へ遷移</h1>
+		<form th:action="@{/image/show}" method="get">
+			<input type="submit"  value="次へ" style="font-size:20px;width:90%;">
+		</form>
+			
+	</body>
+</html>

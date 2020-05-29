@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Image Edit</title>
+		<link th:href="@{/css/jquery.fs.zoomer.css}" rel="stylesheet" type="text/css" media="all">
+		<style>
+			/* zoomer CSS*/
+			.zoomer_wrapper {
+			  border: 1px solid #ddd;
+			  border-radius: 3px;
+			  height: 300px;
+			  margin: 10px 0;
+			  overflow: hidden;
+			  width: 45%;
+			}
+			
+			/* 画像回転用CSS */
+			.rotate90 {
+			   transform: rotate(-90deg);
+			}
+			
+			.rotate180 {
+			   transform: rotate(-180deg);
+			}
+			
+			.rotate270 {
+			   transform: rotate(-270deg);
+			}
+			
+			/* サムネイルCSS */
+			.wrap {
+				width:45%;
+				height:300px;
+				background:#000;
+				margin:10px 0;
+				padding:10px;
+				text-align:center;
+				
+			}
+			.wrap p {
+				height:300px;
+				margin-top:0px;
+				margin-bottom:0px;
+			}
+			.wrap ul {
+				display:block;
+				overflow:hidden;
+				margin-top:10px;
+				margin-right:-10px;
+				margin-left:-10px;
+				clear:both;
+				padding:10px;
+				background:#f00;
+			}
+			.wrap li {
+				display:block;
+				float:left;
+				background:#fff;
+				margin-right:10px;
+			}
+			.wrap li img {
+				cursor:pointer;
+			}
+
+			/* Pan and Zoom */
+
+			.image_container {
+				border: 1px solid #ddd;
+				border-radius: 3px;
+				height : 400px;
+				width : 60%;
+			}
+
+			.button_area {
+				border: 1px solid #ddd;
+				border-radius: 3px;
+				width : 60%;
+			}
+
+			.button_area span img {
+				padding-left : 20px;
+			}
+
+			.box2, .box3 {
+				  float: left;
+				  width: 50%;  /** 横幅50% **/
+			  }
+			
+		</style>
+<!--		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>-->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" type="text/javascript"></script>
+		<script th:src="@{/js/jquery.fs.zoomer.min.js}"></script>
+		<script th:src="@{/js/smartzoom.min.js}"></script>
+		<script type="text/javascript" th:inline="javascript">
+			$(document).ready(function() {
+
+				// == Zoomer初期設定 ==
+				$(".zoomer_basic").zoomer();
+
+				// == Pan and Zoom初期設定 ==
+				$('#imageFullScreen').smartZoom(
+				{
+					'containerClass':'zoomableContainer',
+					'maxScale':10,
+					'dblClickEnabled':false,
+					'moveCursorEnabled':false,
+					'scrollEnabled':true,
+					'mouseEnabled':true,
+					'containerBackground':'#000000'
+				});
+
+			  	// == Zoomer ==
+			  	// 回転ボタン押下時の処理
+			  	$("#rotate").on("click",function(){
+					if( $(".zoomer-image").hasClass("rotate90") ){
+						$(".zoomer-image").removeClass("rotate90");
+						$(".zoomer-image").addClass("rotate180");
+					}else if( $(".zoomer-image").hasClass("rotate180") ){
+						$(".zoomer-image").removeClass("rotate180");
+						$(".zoomer-image").addClass("rotate270");
+					}else if( $(".zoomer-image").hasClass("rotate270") ){
+						$(".zoomer-image").removeClass("rotate270");
+					}else{
+						$(".zoomer-image").addClass("rotate90");
+					}
+			  	});
+
+				// == サムネイル ==
+				// 画像入れ替え
+				$("img.ChangePhoto").on("click",function(){
+					var ImgSrc = $(this).attr("src");
+					var ImgAlt = $(this).attr("alt");
+					$("img#MainPhoto").attr({src:ImgSrc,alt:ImgAlt});
+					$("img#MainPhoto").hide();
+					$("img#MainPhoto").fadeIn("slow");
+					return false;
+				});
+
+
+				// == Pan and Zoom ==
+				// ズームイン、ズームアウト
+				$("#zoomInButton,#zoomOutButton").on("click", function(e){
+					var scaleToAdd = 0.3;
+					if(e.target.id == 'zoomOutButton'){
+						scaleToAdd = -scaleToAdd;
+					}
+					$('#imageFullScreen').smartZoom('zoom', scaleToAdd);
+				});
+
+				// 回転
+				$("#rotateImage").on("click",function(){
+					if( $("#imagef").hasClass("rotate180") ){
+						$("#imagef").removeClass("rotate180");
+					}else{
+						$("#imagef").addClass("rotate180");
+					}
+			  	});
+
+			  	// 画像入れ替え
+			  	$("img.ChangePhoto2").on("click",function(){
+					var ImgSrc = $(this).attr("src");
+					var ImgAlt = $(this).attr("alt");
+					$("img#imagef").attr({src:ImgSrc,alt:ImgAlt});
+					$("img#imagef").hide();
+					$("img#imagef").fadeIn("slow");
+					$('#imageFullScreen').smartZoom('destroy');
+					$('#imageFullScreen').smartZoom();
+					return false;
+				});
+
+			  	
+			});
+
+		</script>
+	</head>
+	<body>
+		<div>
+			<div class="box1">
+				<h1>画像検証(Zoomer)</h1>
+				<div class="zoomer_wrapper zoomer_basic">
+					<img th:src="@{/images/license.jpg}"/>
+					<img th:src="@{/images/license2.png}"/>
+				</div>
+				<div>
+					<input type="image" th:src="@{/images/arrow.png}" id="rotate"/>
+				</div>
+			</div>
+			<div class="box2">
+				<h1>画像検証(Pan and Zoom)</h1>
+				<div id="imgContainer" class="image_container">
+					<span id="imageFullScreen" style="text-align:center;display:inline-block;">
+						<img id="imagef" th:src="@{/images/license.jpg}" style="width:100%;"/>
+					</span>
+				</div>
+				<div class="button_area">
+
+					<span>
+						<input type="image" th:src="@{/images/plus.png}" id="zoomInButton" style="margin:20px 0px 20px 20px;;width:40px;height:40px;"/>
+						<input type="image" th:src="@{/images/minus.png}" id="zoomOutButton" style="margin:20px 0px 20px 20px;width:40px;height:40px;"/>
+						<!-- <input type="image" th:src="@{/images/minus2.png}" id="zoomDefault" style="margin-left:20px;margin-top:20px;width:40px;height:40px;"/> -->
+						<input type="image" th:src="@{/images/arrow.png}" id="rotateImage" style="margin:20px 0px 20px 20px;width:40px;height:40px;"/>
+					</span>
+					<span>
+						<img th:src="@{/images/license.jpg}" class="ChangePhoto2" width="100px" alt="img1"/>
+						<img th:src="@{/images/license2.jpg}" class="ChangePhoto2" width="100px" alt="img2"/>
+						<img th:src="@{/images/license3.jpg}" class="ChangePhoto2" width="100px" alt="img3"/>
+					</span>
+
+				</div>
+			</div>
+			<div class="box3">
+				<h1>画像検証2(サムネイル)</h1>
+				<div class="wrap">
+					<p>
+						<img th:src="@{/images/license.jpg}" widht="300px" height="200px" id="MainPhoto" alt="img1"/>
+					</p>
+					<ul>
+						<li><img th:src="@{/images/license.jpg}" class="ChangePhoto" width="100px" alt="img1"/></li>
+						<li><img th:src="@{/images/license2.png}" class="ChangePhoto" width="100px" alt="img2"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+	</body>
+</html>
